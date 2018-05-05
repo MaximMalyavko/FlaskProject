@@ -1,6 +1,6 @@
-from app import app
+from app import app, db
 from flask import render_template, redirect, flash, url_for, request
-from app.forms import LoginForm
+from app.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from werkzeug.urls import url_parse
@@ -10,6 +10,8 @@ from werkzeug.urls import url_parse
 @login_required
 def index():
     #user = {'username':'Fedor'}
+    print('--user--')
+    print(current_user.get_id())
     posts = [
         {
             'author': {'username': 'John'},
@@ -39,17 +41,11 @@ def login():
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
-        print('111')
-        print(next_page)
-        print('222')
-        print(url_parse(next_page))
-        if not next_page or url_parse(next_page).netloc != '':
+        if not next_page or url_parse(next_page).netloc != '': #TODO эта хрень не совсем ясна - уточнить что за url_parse
             print('333')
             next_page = url_for('index')
             print('444')
-        print('555')
         return redirect(next_page)
-        print('777')
     return render_template('login.html', title='Sign in', form=form)
 
 
@@ -57,3 +53,18 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations! You are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
