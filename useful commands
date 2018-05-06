@@ -1,0 +1,10 @@
+set FLASK_APP=microblog.py
+set FLASK_DEBUG=1
+
+flask run
+flask db -m "some update structure of db" migrate
+flask db upgrade
+flask shell
+python -m smtpd -n -c DebuggingServer localhost:8025
+set MAIL_SERVER = localhost
+set MAIL_PORT = 8025
