@@ -1,34 +1,33 @@
 from app import app, db
 from flask import render_template, redirect, flash, url_for, request
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import User, Post
 from werkzeug.urls import url_parse
 from datetime import datetime
 
-@app.route("/")
-@app.route("/index")
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
     #user = {'username':'Fedor'}
-    print('--user--')
-    print(current_user.get_id())
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        },
-        {
-            'author': {'username': 'Иполит'},
-            'body': 'Какая гадость эта ваша заливная рыба!!'
-        }
-    ]
-    return render_template('index.html', title='Main page', posts=posts)
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('You post has been published!')
+        return redirect(url_for('index'))
+    posts = current_user.followed_posts().all()
+    # TODO pagination here
+    #posts =
+    return render_template('index.html', title='Main page', form=form, posts=posts)
 
+@app.route('/explore')
+@login_required
+def explore():
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('index.html', title='Explore', posts=posts)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -118,7 +117,7 @@ def follow(username):
 @app.route('/unfollow/<username>')
 @login_required
 def unfollow(username):
-    user = User.query.filter_by(username=username)
+    user = User.query.filter_by(username=username).first()
     if user is None:
         flash('User {} not found'.format(username))
         return redirect(url_for('index'))
