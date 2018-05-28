@@ -3,3 +3,5 @@ Flask-WTF==0.14.2
 Flask-SQLAlchemy==2.3.2
 Flask-Migrate==2.1.1
 Flask-Login==0.4.1
+Flask-Mail==0.9.1
+PyJWT=1.6.4
