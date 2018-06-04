@@ -154,13 +154,9 @@ def reset_password_request():
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
     if current_user.is_authenticated:
-        print('1?')
         redirect(url_for('index'))
     user = User.verify_reset_password_token(token)
-    print('2?')
-    print(user)
     if not user:
         return redirect(url_for('index'))
     form = ResetPasswordForm()
@@ -170,7 +166,6 @@ def reset_password(token):
         flash('Your password has been reset')
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)
-
 
 @app.before_request
 def before_request():
