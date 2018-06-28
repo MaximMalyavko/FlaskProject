@@ -21,3 +21,4 @@ class Config(object):
     # SECRET_KEY = 'secret_key_for_token'
 
     POSTS_PER_PAGE = 3
+    LANGUAGES = ['en', 'es', 'ru']

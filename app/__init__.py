@@ -8,6 +8,9 @@ from flask_bootstrap import Bootstrap
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask_moment import Moment
+from flask_babel import Babel
+from flask import request
+from flask_babel import lazy_gettext as _l
 import os
 
 app = Flask(__name__)
@@ -16,13 +19,11 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
+login.login_message = _l('Please log in to access this page')
 mail = Mail(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
-
-# x = moment('2017-09-28T21:45:23Z')
-# print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
-# print(x)
+babel = Babel(app)
 
 if not app.debug:
     if app.config['MAIL_SERVER']:
@@ -50,5 +51,8 @@ if not app.debug:
     app.logger.info('Microblog startup')
 from app import routes, models, errors  # цикл импорта app, такая вот фишка у FLask
 
-print('Home 1 commit')
-print('Home 2 commit')
+
+@babel.localeselector
+def get_locale():
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
+
