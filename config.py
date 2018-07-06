@@ -22,3 +22,4 @@ class Config(object):
 
     POSTS_PER_PAGE = 3
     LANGUAGES = ['en', 'es', 'ru']
+    JA_TRANSLATOR_KEY = 'trnsl.1.1.20180705T095444Z.66a0258d85f2d5ca.78e397866c88434e90954aabd9447d27646d8d60'
