@@ -13,6 +13,9 @@ from flask import request
 from flask_babel import lazy_gettext as _l
 import os
 
+print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+print(__name__)
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
