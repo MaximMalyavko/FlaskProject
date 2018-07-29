@@ -13,11 +13,15 @@ from flask import request
 from flask_babel import lazy_gettext as _l
 import os
 
+
+
 print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
 print(__name__)
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
@@ -27,6 +31,12 @@ mail = Mail(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 babel = Babel(app)
+
+from app.errors import bp as errors_bp
+app.register_blueprint(errors_bp)
+from app.errors import bp as auth_bp
+app.register_blueprint(auth_bp, url_prefix='/auth')
+
 
 if not app.debug:
     if app.config['MAIL_SERVER']:
@@ -52,7 +62,7 @@ if not app.debug:
 
     app.logger.setLevel(logging.INFO)
     app.logger.info('Microblog startup')
-from app import routes, models, errors  # цикл импорта app, такая вот фишка у FLask
+from app import routes, models  # цикл импорта app, такая вот фишка у FLask
 
 
 @babel.localeselector
