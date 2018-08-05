@@ -1,7 +1,5 @@
 from flask import render_template
-print('handlers 1')
 from app import db
-print('handlers2')
 from app.errors import bp
 
 
