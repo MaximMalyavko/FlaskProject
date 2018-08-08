@@ -10,6 +10,7 @@ from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask_moment import Moment
 from flask_babel import Babel
 from flask_babel import lazy_gettext as _l
+from elasticsearch import Elasticsearch
 import os
 
 print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
@@ -45,6 +46,8 @@ def create_app(config_class=Config):
     app.register_blueprint(auth_bp, url_prefix='/auth')
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
+
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) if app.config['ELASTIC_SEARCH'] else None
 
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:
