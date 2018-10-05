@@ -28,3 +28,4 @@ class Config(object):
     LANGUAGES = ['en', 'es', 'ru']
     #JA_TRANSLATOR_KEY = 'trnsl.1.1.20180705T095444Z.66a0258d85f2d5ca.78e397866c88434e90954aabd9447d27646d8d60'
     ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
+	LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
